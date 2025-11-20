@@ -1,15 +1,15 @@
 # Site information
-site_name: THOTH Documentation
-site_url: https://sitename.example
-site_author: Stelios Alvanos
-site_description: THOTH Documentation
+site_name: SAMplify_SuGaR Documentation
+site_url: https://zacharivaia.github.io/SAMplify_SuGaR
+site_author: Vaia Zachari
+site_description: Documentation for the SAMplify_SuGaR 3D reconstruction pipeline
 
 # Copyright
-copyright: Copyright &copy; 2025 TEXTaiLES
+copyright: Copyright © 2025 SAMplify_SuGaR
 
 # Repository
-repo_name: thoth-documentation-test
-repo_url: https://github.com/TEXTaiLES/thoth-documentation
+repo_name: SAMplify_SuGaR
+repo_url: https://github.com/ZachariVaia/SAMplify_SuGaR
 
 # Config
 theme:
@@ -17,32 +17,38 @@ theme:
   palette:
     scheme: slate
     primary: grey
-  logo: assets/thoth-logo.png
-  favicon: assets/thoth-logo.png
+  logo: assets/nephele_logo_2.png
+  favicon: assets/nephele_logo_2.png
 
 # Extra
 extra:
   social: 
     - icon: fontawesome/brands/github
-      link: https://github.com/Xenobii
+      link: https://github.com/ZachariVaia
 
 extra_css:
   - stylesheets/extra.css
 
-# Page
+extra_javascript:
+  - javascripts/extra.js
+
+# Page structure
 nav:
-  - Deployment: 
+  - Deployment:
     - Basic Installation: deployment/installation_basic.md
-    - Advanced Installation: deployment/installation_advanced.md
-    - Opening a scene with THOTH: deployment/open_scene.md
+    - Dataset Preparation: deployment/dataset_preparation.md
+    - Running the Full Pipeline: deployment/run_pipeline.md
+
   - Manual:
-    - User Interface: manual/ui.md
-    - Tools: manual/tools.md
-    - Layers: manual/layers.md
-    - History: manual/history.md
-    - Keybinds: manual/keybinds.md
-    - Collaborative: manual/collab.md
-    - Exporting changes: manual/export.md
+    - SAM2 GUI – Mask Annotation: manual/sam2_gui.md
+    - SAM2 – Mask Generation Logic: manual/sam2_masks.md
+    - COLMAP – Structure-from-Motion: manual/colmap.md
+    - SuGaR – Gaussian Splatting Overview: manual/sugar_overview.md
+    - SuGaR – Gaussian Visualization: manual/sugar_visualization.md
+    - SuGaR – Mesh Extraction: manual/sugar_mesh.md
+    - Output Structure: manual/output_structure.md
+
   - API:
-    - Events: api/events.md
-    - REST API: api/rest.md
+    - Pipeline Scripts: api/scripts.md
+    - Environment Variables: api/env.md
+    - Folder Structure: api/folders.md
