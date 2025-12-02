@@ -1,6 +1,6 @@
 # Site information
 site_name: NEPHELE Documentation
-site_url: https://github.com/TEXTaiLES/NEPHELE
+site_url: https://github.com/TEXTaiLES/SAMplify_SuGaR
 site_author: Vaia Zachari
 site_description: Documentation for the NEPHELE 3D reconstruction pipeline
 
@@ -8,8 +8,8 @@ site_description: Documentation for the NEPHELE 3D reconstruction pipeline
 copyright: Copyright © 2025 NEPHELE
 
 # Repository
-repo_name: NEPHELE
-repo_url: https://github.com/TEXTaiLES/NEPHELE
+repo_name: SAMplify_SuGaR
+repo_url: https://github.com/TEXTaiLES/SAMplify_SuGaR
 
 # Config
 theme:
@@ -24,7 +24,7 @@ theme:
 extra:
   social: 
     - icon: fontawesome/brands/github
-      link: https://github.com/TEXTaiLES/NEPHELE
+      link: https://github.com/TEXTaiLES/SAMplify_SuGaR
 
 extra_css:
   - stylesheets/extra.css
