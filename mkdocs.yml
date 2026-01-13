@@ -41,14 +41,8 @@ nav:
 
   - Manual:
     - SAM2 GUI – Mask Annotation: manual/sam2_gui.md
-    - SAM2 – Mask Generation Logic: manual/sam2_masks.md
-    - COLMAP – Structure-from-Motion: manual/colmap.md
-    - SuGaR – Gaussian Splatting Overview: manual/sugar_overview.md
-    - SuGaR – Gaussian Visualization: manual/sugar_visualization.md
-    - SuGaR – Mesh Extraction: manual/sugar_mesh.md
-    - Output Structure: manual/output_structure.md
 
   - API:
-    - Pipeline Scripts: api/scripts.md
-    - Environment Variables: api/env.md
-    - Folder Structure: api/folders.md
+    - COLMAP – Structure-from-Motion: manual/colmap.md
+    - SuGaR : manual/sugar.md
+    
