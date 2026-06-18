@@ -1,42 +1,54 @@
-# NEPHELE DOCUMENTATION PORTAL
+# NEPHELE Documentation
 
 <p align="center">
     <img src="assets/nephele_logo_2.png" alt="NEPHELE" width="220"/>
 </p>
 
-<p style="text-align: justify; text-justify: inter-word;">
-<b>NEPHELE</b> is an intermediate reconstruction module developed within the 
-<a href="https://www.echoes-eccch.eu/textailes/">TEXTaiLES</a> toolbox as a dedicated 
-3D reconstruction component. It serves as the central bridge between SAM2 segmentation 
-and SuGaR-based surface alignment.
-</p>
+**NEPHELE** is a pipeline for background-free 3D mesh reconstruction, developed within the [TEXTaiLES](https://www.echoes-eccch.eu/textailes/) toolbox at Athena Research Center.
 
-<p style="text-align: justify; text-justify: inter-word;">
-NEPHELE transforms segmented multi-view images into a structured 3D Gaussian 
-representation. Named after the mythological figure Nephele, symbolizing 
-<i>cloud</i> and <i>formation</i>, the module embodies the core principle of Gaussian 
-Splatting: representing geometry as a continuous density cloud rather than 
-discrete points.
-</p>
+It combines three components in sequence:
 
-<p style="text-align: justify; text-justify: inter-word;">
-Using SAM2-filtered masks and COLMAP camera parameters, NEPHELE constructs an 
-initial Gaussian field where each splat encodes localized surface attributes such 
-as position, covariance, opacity, and anisotropy. This cloud-based representation 
-provides a smooth and differentiable foundation for SuGaR optimization, enhancing 
-reconstruction stability, improving surface consistency across views, and enabling 
-efficient convergence toward high-quality 3D models.
-</p>
+| Step | Component | What it does |
+|------|-----------|-------------|
+| 1 | **SAM2** | Segments the object from the background using interactive point annotation |
+| 2 | **COLMAP** | Estimates camera positions and builds a sparse 3D point cloud |
+| 3 | **SuGaR / PGSR** | Optimizes a Gaussian field and extracts a clean `.obj` mesh |
+
+The result is a textured 3D mesh with no background — ready for use in downstream applications.
+
+---
+
+## Two components, two branches
+
+NEPHELE is split across two branches of the same repository:
+
+| Branch | Role | Use it when |
+|--------|------|-------------|
+| [`nefele-training`](https://github.com/TEXTaiLES/SAMplify_SuGaR/tree/nefele-training) | Backend — SAM2, COLMAP, SuGaR/PGSR run as Docker containers | You want to run the pipeline from the terminal |
+| [`nefele_ui`](https://github.com/TEXTaiLES/SAMplify_SuGaR/tree/nefele_ui) | Web UI — browser-based interface for upload, annotation, and download | You want a visual interface without touching the terminal |
+
+Both can run together: the UI communicates with the backend over a shared filesystem or through the HESTIA API.
+
+---
+
+## Architecture
 
 <p align="center">
-    <img src="assets/Logo-Textailes-Colour-RGB-Hor.png" alt="TEXTaiLES" width="520"/>
+    <img src="assets/architecture.png" alt="Architecture diagram" width="720"/>
 </p>
 
+In the full deployment, **Nefele UI** and the **SAM VM** (backend) communicate through **HESTIA** — a central API that manages image jobs, reconstruction state, and results. For local use, the two components share a filesystem directly without HESTIA.
 
+---
+
+## Where to start
+
+→ **[Installation](deployment/installation_basic.md)** — clone the branches, install requirements, build Docker images
 
 ---
 
 ## Citation
+
 If you use this software, please cite it using the following BibTeX entry:
 
 ```bibtex
@@ -84,8 +96,9 @@ If you use this software, please cite it using the following BibTeX entry:
 ```
 
 ## License
-This project is licensed under the MIT License. 
 
+This project is licensed under the MIT License.
 
-
-
+<p align="center">
+    <img src="assets/Logo-Textailes-Colour-RGB-Hor.png" alt="TEXTaiLES" width="520"/>
+</p>

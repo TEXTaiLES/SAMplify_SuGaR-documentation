@@ -1,166 +1,163 @@
 
-# Running the Full Pipeline
+# Running the Backend Pipeline
 
-This page explains how to execute the complete SAMplify_SuGaR pipeline, which runs:
+This page explains how to start the backend services and run the full reconstruction pipeline using the `nefele-training` branch.
 
-1. SAM2 – mask annotation and generation  
-2. Mask application  
-3. COLMAP – sparse & dense reconstruction  
-4. SuGaR – Gaussian optimization  
-5. Mesh extraction  
+The pipeline performs these steps automatically:
 
-Once your dataset is correctly placed inside `SAM2/data/input/<DATASET_NAME>/`, you can run the pipeline with a single command.
+1. **SAM2** — interactive mask annotation and generation
+2. **COLMAP** — sparse reconstruction and camera pose estimation
+3. **SuGaR / PGSR** — Gaussian Splatting optimization and mesh extraction
 
+---
 
+## 1. Start the Persistent Services
 
-## 1. Pipeline Command
+From inside the `SAMplify_SuGaR` folder, start the three backend containers:
 
-From the project root directory:
+```bash
+docker compose up -d sam2 colmap sugar
+```
+
+These containers stay running in the background. You only need to start them once — you can then run the pipeline multiple times without restarting them.
+
+If you are working with **textiles or thin flat surfaces**, use the PGSR service instead of SuGaR:
+```bash
+docker compose up -d sam2 colmap pgsr
+```
+
+Check that all services are up:
+
+```bash
+docker compose ps
+```
+
+---
+
+## 2. Prepare Your Dataset
+
+Place your `.jpg` images inside:
 
 ```
-./run_pipeline.sh <dataset_name>
+SAM2/data/input/<your_dataset_name>/
 ```
+
+See **[Dataset Preparation](dataset_preparation.md)** for naming rules, image requirements, and folder structure.
+
+---
+
+## 3. Run the Pipeline
+
+Once the services are running and your images are in place, start the pipeline with:
+
+```bash
+scripts/run_pipeline.sh <DATASET_NAME>
+```
+
+Replace `<DATASET_NAME>` with the name of the folder you created under `SAM2/data/input/`.
 
 Example:
 
-
-```
-./run_pipeline.sh my_object
-```
-The `<dataset_name>` must match the folder name you created under:
-
-```
-SAM2/data/input/<dataset_name>/
+```bash
+scripts/run_pipeline.sh my_garment
 ```
 
+---
 
+## 4. What the Pipeline Does
 
-## 2. What the Pipeline Does
+### Step 1 — SAM2 Mask Annotation
 
-The script performs the following steps automatically:
-
-### **Step 1 — SAM2 Mask Generation**
-
-* Launches SAM2
-* Processes each image
-* Saves binary masks into:
-
+A browser-based interface opens **locally** at:
 
 ```
-SAM2/data/output/<dataset_name>/masks/
+http://localhost:8092
 ```
 
+This runs on your own machine — not the hosted version at [nephele.textailes.athenarc.gr](https://nephele.textailes.athenarc.gr). When running the backend pipeline yourself, annotation always happens at `localhost:8092`.
 
+This is the **only manual step**. You click on the image to mark:
 
-### **Step 2 — Mask Application**
+- **Left-click** → foreground (the object to keep)
+- **Right-click** → background (areas to remove)
 
-The pipeline multiplies each mask with the original image:
+After saving your points, SAM2 generates binary masks for all images.  
+See [SAM2 GUI Manual](../manual/sam2_gui.md) for detailed instructions.
 
-```
-masked = original_image * mask
-```
+### Step 2 — Mask Application
 
-Masked images are saved into:
-
+Each mask is multiplied with its source image to remove the background. The masked images are written to:
 
 ```
 SAM2/data/output/<dataset_name>/masked_images/
 ```
 
-These images are used as input to COLMAP.
+### Step 3 — COLMAP Reconstruction
 
-
-
-### **Step 3 — COLMAP Reconstruction**
-
-COLMAP runs:
-
-* Sparse reconstruction
-* Pose estimation
-* Bundle adjustment
-* Dense stereo
-* Depth fusion
-
-Results are saved under:
+COLMAP estimates camera positions and builds a sparse 3D point cloud from the masked images. Results go to:
 
 ```
 output/<dataset_name>/colmap/
- ├── sparse/
- └── dense/
+├── sparse/
+└── dense/
 ```
 
+### Step 4 — Gaussian Splatting (SuGaR / PGSR)
 
-
-### **Step 4 — SuGaR Optimization (Gaussian Splatting)**
-
-The dense cloud from COLMAP initializes the Gaussian field.
-SuGaR then optimizes:
-
-* Gaussian positions
-* Rotations
-* Scales
-* Covariance
-* Opacity
-
-Outputs appear in:
+SuGaR or PGSR initializes a Gaussian field from the COLMAP point cloud and optimizes it across all views. Outputs go to:
 
 ```
 output/<dataset_name>/sugar/
 ```
 
-### **Step 5 — Mesh Extraction**
+### Step 5 — Mesh Extraction
 
-A clean, background-free mesh is generated using:
-
-* SDF estimation
-* Poisson reconstruction or marching cubes
-* Texture projection (optional)
-
-Final meshes are saved in:
+A clean, background-free `.obj` mesh is extracted using surface sampling and Poisson reconstruction. Final files are written to:
 
 ```
 output/<dataset_name>/final/
 ```
 
+---
 
+## 5. Logs
 
-## 3. Logs and Console Output
-
-During execution you will see:
-
-* Masking progress
-* COLMAP reconstruction logs
-* SuGaR training progress
-* Mesh extraction messages
-
-If any component fails, check:
-
+If any step fails, check the log output in your terminal. Detailed logs per component are written to:
 
 ```
 output/<dataset_name>/logs/
 ```
 
+---
 
+## 6. Re-running with Existing Prompts
 
-## 4. Pipeline Completion
+If you have already annotated this dataset before, SAM2 will detect the saved `prompts.json` file and ask whether to **reuse** the existing annotations or **start over**. This saves time when re-running the pipeline on the same dataset.
 
-When the pipeline finishes successfully, you will have:
+---
 
-* All masks
-* Masked images
-* COLMAP reconstruction
-* SuGaR Gaussian field
-* Final mesh model
+## 7. What You Get
 
-Stored neatly in the output folder.
+When the pipeline finishes, the following files are available under `output/<dataset_name>/`:
 
-## 5. Next Steps
+```
+output/<dataset_name>/
+├── masks/                  # Binary masks for each image (PNG)
+├── masked_images/          # Background-removed images used by COLMAP
+├── colmap/
+│   ├── sparse/             # Camera poses and sparse point cloud
+│   └── dense/              # Dense stereo reconstruction
+├── sugar/                  # Gaussian Splatting intermediate files
+└── final/
+    ├── <dataset_name>.obj  # Final 3D mesh
+    ├── <dataset_name>.mtl  # Material file
+    └── *.png               # Texture maps
+```
 
-Proceed to the **Manual** section to understand each module:
+The `.obj` file is the main output — a clean, background-free 3D mesh ready to open in MeshLab, Blender, or any 3D viewer.
 
-* SAM2 GUI
-* COLMAP processing
-* SuGaR Gaussian optimization
-* Mesh extraction
+---
 
+## Next Steps
 
+- Use the **[Web UI](nefele_ui.md)** for a browser-based experience with file upload and model selection

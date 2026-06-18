@@ -35,14 +35,13 @@ extra_javascript:
 # Page structure
 nav:
   - Deployment:
-    - Basic Installation: deployment/installation_basic.md
+    - Installation: deployment/installation_basic.md
     - Dataset Preparation: deployment/dataset_preparation.md
-    - Running the Full Pipeline: deployment/run_pipeline.md
+    - Running the Backend Pipeline: deployment/run_pipeline.md
+    - Web UI (nefele_ui): deployment/nefele_ui.md
 
-  - Manual:
-    - SAM2 GUI – Mask Annotation: manual/sam2_gui.md
-
-  - API:
+  - Reference:
     - COLMAP – Structure-from-Motion: manual/colmap.md
-    - SuGaR : manual/sugar.md
-    
+    - SuGaR / PGSR: manual/sugar.md
+    - Environment Variables: api/env.md
+
