@@ -36,10 +36,6 @@ can run together locally or through the HESTIA platform.
 </p>
 
 <p align="center">
-    <img src="assets/architecture.png" alt="Architecture" width="700"/>
-</p>
-
-<p align="center">
     <img src="assets/Logo-Textailes-Colour-RGB-Hor.png" alt="TEXTaiLES" width="520"/>
 </p>
 
